@@ -12,7 +12,9 @@ opt-level = 1
 opt-level = 3
 
 [dependencies]
-bevy = { version = "0.14.1", features = ["dynamic_linking"] }
+bevy = { version = "0.14.1", features = ["dynamic_linking", "mp3"] }
+bevy_eventlistener = "0.8.1"
+bevy_mod_picking = "0.20.1"
 convert_case = "0.6.0"
 log = { version = "0.4.22", features = [
     "max_level_debug",

@@ -1,0 +1,51 @@
+{
+        // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "args": [],
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=galactic_merchants",
+                    "--package=galactic_merchants"
+                ],
+                "filter": {
+                    "kind": "bin",
+                    "name": "galactic_merchants"
+                }
+            },
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PATH": "${env:USERPROFILE}/.rustup/toolchains/nightly-x86_64-pc-windows-msvc/bin;${workspaceFolder}/target/debug/deps;${env:PATH}",
+            },
+            "name": "Debug executable 'galactic_merchants'",
+            "request": "launch",
+            "type": "lldb"
+        },
+        {
+            "args": [],
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=galactic_merchants",
+                    "--package=galactic_merchants"
+                ],
+                "filter": {
+                    "kind": "bin",
+                    "name": "galactic_merchants"
+                }
+            },
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PATH": "${env:USERPROFILE}/.rustup/toolchains/nightly-x86_64-pc-windows-msvc/bin;${workspaceFolder}/target/debug/deps;${env:PATH}"
+            },
+            "name": "Debug unit tests in executable 'galactic_merchants'",
+            "request": "launch",
+            "type": "lldb"
+        }
+    ]
+}

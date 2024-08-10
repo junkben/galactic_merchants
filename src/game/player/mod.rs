@@ -4,7 +4,7 @@ use super::spaceship::StandardSpaceship;
 
 pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
-	fn build(&self, app: &mut App) {}
+	fn build(&self, _app: &mut App) {}
 }
 
 /// A component that represents a Player

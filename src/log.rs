@@ -17,7 +17,7 @@ const LOGS: [&str; 8] = [
 
 pub fn log_plugin() -> bevy_log::LogPlugin {
 	bevy_log::LogPlugin {
-		level:        bevy_log::Level::INFO,
+		level:        bevy_log::Level::TRACE,
 		filter:       LOGS.join(",").into(),
 		custom_layer: |_| None
 	}
