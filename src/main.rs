@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_mod_picking::DefaultPickingPlugins;
 use menu::MenuState;
 
@@ -10,7 +11,7 @@ mod menu;
 mod splash;
 mod window;
 
-const TEXT_COLOR: Color = Color::srgb(0.9, 0.9, 0.9);
+const TEXT_COLOR: Color = Color::srgb(0.7, 0.7, 0.7);
 
 fn main() {
 	println!("Hello, world!");
@@ -22,6 +23,8 @@ fn main() {
 			.set(window::window_plugin())
 			.set(log::log_plugin())
 	);
+
+	app.add_plugins(WorldInspectorPlugin::new());
 
 	// Add game state
 	app.init_state::<AppState>();

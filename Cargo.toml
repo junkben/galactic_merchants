@@ -15,9 +15,16 @@ opt-level = 3
 bevy = { version = "0.14.1", features = ["dynamic_linking", "mp3"] }
 bevy_eventlistener = "0.8.1"
 bevy_mod_picking = "0.20.1"
+## Bevy Inspector Egui makes it easy to modify widgets at runtime.
+bevy-inspector-egui = "0.25.2"
+## Sickle is a UI library for Bevy.
+sickle_ui = { git = "https://github.com/UmbraLuminosa/sickle_ui" }
+
 convert_case = "0.6.0"
 log = { version = "0.4.22", features = [
     "max_level_debug",
     "release_max_level_warn",
 ] }
 rand = "0.8.5"
+strum = "0.26.3"
+strum_macros = "0.26.4"
