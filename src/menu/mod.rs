@@ -1,5 +1,6 @@
 mod button;
 mod main_menu;
+mod new_game;
 mod transition;
 
 use bevy::prelude::*;
@@ -26,7 +27,8 @@ impl Plugin for MenuPlugin {
 			.add_plugins((
 				main_menu::MainMenuPlugin,
 				transition::MenuTransitionPlugin,
-				button::MenuButtonPlugin
+				button::MenuButtonPlugin,
+				new_game::NewGameMenuPlugin
 			));
 	}
 }
@@ -40,6 +42,7 @@ pub enum MenuState {
 	Settings,
 	SettingsSound,
 	SettingsDisplay,
+	ChooseDifficulty,
 	#[default]
 	Disabled
 }

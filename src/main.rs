@@ -5,9 +5,12 @@ use menu::MenuState;
 
 mod audio;
 mod camera;
+mod entity_commands;
 mod game;
 mod log;
 mod menu;
+mod resources;
+pub mod shaders;
 mod splash;
 mod window;
 
@@ -36,7 +39,8 @@ fn main() {
 		splash::SplashPlugin,
 		menu::MenuPlugin,
 		game::GamePlugin,
-		audio::MenuAudioPlugin
+		audio::MenuAudioPlugin,
+		shaders::ShadersPlugin
 	));
 
 	// Add update handles

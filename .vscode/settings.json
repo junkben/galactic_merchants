@@ -2,6 +2,9 @@
     "[toml]": {
         "editor.defaultFormatter": "tamasfe.even-better-toml"
     },
+    "[wgsl]": {
+        "editor.defaultFormatter": "wgsl-analyzer.wgsl-analyzer"
+    },
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
     "editor.formatOnSave": true,
     "editor.wordWrap": "wordWrapColumn",
@@ -17,5 +20,11 @@
     "rust-analyzer.rustfmt.extraArgs": [
         "+nightly"
     ],
-    "rust-analyzer.showUnlinkedFileNotification": false
+    "rust-analyzer.showUnlinkedFileNotification": false,
+    "wgsl-analyzer.customImports": {
+        "bevy_pbr::mesh_view_bindings": "https://raw.githubusercontent.com/bevyengine/bevy/v0.14.1/crates/bevy_pbr/src/render/mesh_view_bindings.wgsl",
+        "bevy_sprite::mesh2d_vertex_output": "https://raw.githubusercontent.com/bevyengine/bevy/v0.14.1/crates/bevy_sprite/src/render/sprite.wgsl"
+    },
+    "wgsl-analyzer.diagnostics.nagaVersion": "0.14",
+    "wgsl-analyzer.inlayHints.structLayoutHints": true
 }

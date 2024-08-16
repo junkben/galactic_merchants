@@ -2,14 +2,15 @@ use bevy::prelude::*;
 use bevy_eventlistener::callbacks::ListenerInput;
 use bevy_mod_picking::events::{Click, Pointer};
 use button::{MenuButton, MenuButtonEvent, UiMenuButtonExt};
-use sickle_ui::prelude::*;
+use sickle_ui::{prelude::*, ui_commands::SetTextExt};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 use transition::TransitionEvent;
 
 use super::*;
+use crate::entity_commands::FontCommands;
 
-const MENU_PANEL: Color = Color::srgba(0.15, 0.15, 0.15, 0.50);
+pub const MENU_PANEL: Color = Color::srgba(0.15, 0.15, 0.15, 0.50);
 
 // This plugin manages the menu, with 4 different screens:
 // - a main menu with "New Game", "Settings", "Quit"
@@ -19,7 +20,7 @@ pub struct MainMenuPlugin;
 
 impl Plugin for MainMenuPlugin {
 	fn build(&self, app: &mut App) {
-		app.add_event::<MainMenuButtonAction>()
+		app.add_event::<MainMenuAction>()
 			// Systems to handle the main menu screen
 			.add_systems(OnEnter(MenuState::Main), main_menu_setup)
 			.add_systems(
@@ -28,26 +29,26 @@ impl Plugin for MainMenuPlugin {
 			)
 			.add_systems(
 				Update,
-				handle_event_do_button_action
-					.run_if(on_event::<MainMenuButtonAction>())
+				handle_event_main_menu_action
+					.run_if(on_event::<MainMenuAction>())
 			);
 	}
 }
 
 #[derive(Event)]
-pub struct MainMenuButtonAction {
+pub struct MainMenuAction {
 	target: Entity
 }
 
-impl From<ListenerInput<Pointer<Click>>> for MainMenuButtonAction {
+impl From<ListenerInput<Pointer<Click>>> for MainMenuAction {
 	fn from(event: ListenerInput<Pointer<Click>>) -> Self {
-		MainMenuButtonAction {
+		MainMenuAction {
 			target: event.target
 		}
 	}
 }
 
-impl MenuButtonEvent for MainMenuButtonAction {}
+impl MenuButtonEvent for MainMenuAction {}
 
 // All actions that can be triggered from a button click
 #[derive(Component, Clone, Copy, EnumIter)]
@@ -75,52 +76,54 @@ impl<E: MenuButtonEvent> MenuButton<E> for MainMenuButton {
 struct OnMainMenuScreen;
 
 fn main_menu_setup(mut commands: Commands) {
-	commands.ui_builder(UiRoot).column(|column| {
-		column
-			.style()
-			.align_self(AlignSelf::Center)
-			.justify_self(JustifySelf::Center)
-			.align_items(AlignItems::Center)
-			.justify_content(JustifyContent::Center)
-			.width(Val::Percent(80.))
-			.height(Val::Percent(80.))
-			.flex_direction(FlexDirection::Column)
-			.background_color(MENU_PANEL);
-
-		column.spawn(OnMainMenuScreen);
-
-		column.column(|button_column| {
-			button_column
+	commands
+		.ui_builder(UiRoot)
+		.column(|column| {
+			column
 				.style()
+				.align_self(AlignSelf::Center)
+				.justify_self(JustifySelf::Center)
 				.align_items(AlignItems::Center)
 				.justify_content(JustifyContent::Center)
-				.width(Val::Percent(60.))
-				.height(Val::Percent(60.));
+				.width(Val::Percent(80.))
+				.height(Val::Percent(80.))
+				.flex_direction(FlexDirection::Column)
+				.background_color(MENU_PANEL);
 
-			button_column
-				.label(LabelConfig {
-					label: "GALACTIC MERCHANTS".into(),
-					color: TEXT_COLOR,
-					..default()
-				})
-				.style()
-				.align_self(AlignSelf::Auto)
-				.justify_self(JustifySelf::Auto)
-				.font_size(80.0)
-				.margin(UiRect::all(Val::Px(20.0)));
+			column.column(|button_column| {
+				button_column
+					.style()
+					.align_items(AlignItems::Center)
+					.justify_content(JustifyContent::Center)
+					.width(Val::Percent(60.))
+					.height(Val::Percent(60.));
 
-			// Spawn main menu buttons
-			for button in MainMenuButton::iter() {
-				button_column.menu_button::<MainMenuButtonAction>(button);
-			}
-		});
-	});
+				button_column
+					.label(LabelConfig::default())
+					.style()
+					.align_self(AlignSelf::Auto)
+					.justify_self(JustifySelf::Auto)
+					.margin(UiRect::all(Val::Px(20.0)))
+					.entity_commands()
+					.set_text("GALACTIC MERCHANTS", None)
+					.set_font("fonts/m6x11plus.ttf")
+					.set_font_size(90.)
+					.set_font_color(TEXT_COLOR);
+
+				// Spawn main menu buttons
+				for button in MainMenuButton::iter() {
+					button_column.menu_button::<MainMenuAction>(button);
+				}
+			});
+		})
+		.insert(OnMainMenuScreen);
 }
 
-fn handle_event_do_button_action(
-	mut er: EventReader<MainMenuButtonAction>,
+fn handle_event_main_menu_action(
+	mut er: EventReader<MainMenuAction>,
 	query_button: Query<(Entity, &MainMenuButton)>,
-	mut ew_transition: EventWriter<TransitionEvent>
+	mut ew_transition: EventWriter<TransitionEvent>,
+	mut menu_state: ResMut<NextState<MenuState>>
 ) {
 	let Some(event) = er.read().last() else {
 		return;
@@ -133,10 +136,19 @@ fn handle_event_do_button_action(
 	};
 
 	use MainMenuButton::*;
-	ew_transition.send(match action {
-		StartNewGame => TransitionEvent::StartGame,
-		LoadSavedGame => TransitionEvent::ContinueGame,
-		Settings => TransitionEvent::Settings,
-		QuitGame => TransitionEvent::Exit
-	});
+	match action {
+		StartNewGame => {
+			menu_state.set(MenuState::ChooseDifficulty);
+			info!("going to change difficulty")
+		},
+		LoadSavedGame => {
+			ew_transition.send(TransitionEvent::ContinueGame);
+		},
+		Settings => {
+			ew_transition.send(TransitionEvent::Settings);
+		},
+		QuitGame => {
+			ew_transition.send(TransitionEvent::Exit);
+		}
+	}
 }

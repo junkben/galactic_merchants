@@ -4,6 +4,7 @@ use bevy_mod_picking::events::{Click, Pointer};
 use sickle_ui::{prelude::*, ui_commands::SetTextExt};
 
 use super::*;
+use crate::entity_commands::FontCommands;
 
 const NORMAL_BUTTON: Color = Color::srgba(0.15, 0.15, 0.15, 0.50);
 const HOVERED_BUTTON: Color = Color::srgba(0.25, 0.25, 0.25, 0.50);
@@ -30,15 +31,17 @@ where
 	E: MenuButtonEvent
 {
 	fn label(&self) -> &'static str;
-
-	/// Common style for all buttons on the main menu
+	fn width(&self) -> Val { Val::Percent(80.) }
+	fn height(&self) -> Val { Val::Percent(25.) }
+	fn min_width(&self) -> Val { Val::Px(300.) }
+	fn min_height(&self) -> Val { Val::Px(30.) }
 	fn bundle(&self) -> ButtonBundle {
 		ButtonBundle {
 			style: Style {
-				width: Val::Percent(80.),
-				height: Val::Percent(25.),
-				min_width: Val::Px(300.),
-				min_height: Val::Px(30.),
+				width: self.width(),
+				height: self.height(),
+				min_width: self.min_width(),
+				min_height: self.min_height(),
 				margin: UiRect::all(Val::Px(5.)),
 				align_self: AlignSelf::Auto,
 				justify_self: JustifySelf::Auto,
@@ -78,12 +81,12 @@ impl<'w, 's> UiMenuButtonExt<'w, 's> for UiBuilder<'_, Entity> {
 			|builder| {
 				builder
 					.label(LabelConfig::default())
-					.style()
-					.font_size(40.0)
-					.font_color(TEXT_COLOR)
 					.entity_commands()
 					.insert(button.clone())
-					.set_text(button.label(), None);
+					.set_text(button.label(), None)
+					.set_font("fonts/m6x11.ttf")
+					.set_font_size(32.)
+					.set_font_color(TEXT_COLOR);
 			}
 		)
 	}
