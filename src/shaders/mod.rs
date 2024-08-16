@@ -11,6 +11,7 @@ impl Plugin for ShadersPlugin {
 		app.add_plugins(
 			Material2dPlugin::<gas_giant::GasGiantMaterial>::default()
 		)
+		.register_asset_reflect::<gas_giant::GasGiantMaterial>()
 		.add_systems(OnEnter(MenuState::Main), gas_giant::setup);
 	}
 }

@@ -4,6 +4,7 @@ use bevy::{
 	render::render_resource::{AsBindGroup, ShaderRef},
 	sprite::{Material2d, MaterialMesh2dBundle}
 };
+use bevy_inspector_egui::{prelude::ReflectInspectorOptions, InspectorOptions};
 use rand::{thread_rng, Rng};
 
 const SHADER_ASSET_PATH: &str = "shaders/gas_giant.wgsl";
@@ -19,8 +20,11 @@ pub fn setup(
 	// cloud_a
 	// put this behind the next one
 	let mut ca = cloud_a();
-	ca.pixels = 200.0;
-	ca.size = 18.0;
+	ca.pixels = 128.0;
+	ca.size = 15.0;
+	ca.time_speed = 0.1;
+	ca.light_border_1 = 0.7;
+	ca.light_border_2 = 0.85;
 
 	commands.spawn(MaterialMesh2dBundle {
 		mesh: meshes.add(Rectangle::default()).into(),
@@ -38,8 +42,12 @@ pub fn setup(
 	// cloud_b
 	let mut cb = cloud_b();
 	cb.seed = rng.gen_range(1.0..10.0);
-	cb.pixels = 200.0;
-	cb.size = 18.0;
+	cb.pixels = 128.0;
+	cb.size = 15.0;
+	cb.cloud_cover = 0.35;
+	cb.time_speed = 0.1;
+	cb.light_border_1 = 0.7;
+	cb.light_border_2 = 0.85;
 
 	commands.spawn(MaterialMesh2dBundle {
 		mesh: meshes.add(Rectangle::default()).into(),
@@ -50,40 +58,58 @@ pub fn setup(
 }
 
 // This struct defines the data that will be passed to your shader
-#[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
+#[derive(Reflect, Asset, AsBindGroup, Debug, Clone, InspectorOptions)]
+#[reflect(InspectorOptions)]
 pub struct GasGiantMaterial {
 	#[uniform(0)]
-	pixels:         f32,
+	#[inspector(min = 16.0, max = 400.0)]
+	pixels: f32,
+
 	#[uniform(1)]
-	cloud_cover:    f32,
+	#[inspector(min = 0.0, max = 1.0)]
+	cloud_cover: f32,
+
 	#[uniform(2)]
-	light_origin:   Vec2,
+	light_origin: Vec2,
+
 	#[uniform(3)]
-	time_speed:     f32,
+	#[inspector(min = -1.0, max = 1.0)]
+	time_speed: f32,
+
 	#[uniform(4)]
-	stretch:        f32,
+	#[inspector(min = 1.0, max = 3.0)]
+	stretch: f32,
+
 	#[uniform(5)]
-	cloud_curve:    f32,
+	#[inspector(min = 1.0, max = 2.0)]
+	cloud_curve: f32,
+
 	#[uniform(6)]
+	#[inspector(min = 0.0, max = 1.0)]
 	light_border_1: f32,
+
 	#[uniform(7)]
+	#[inspector(min = 0.0, max = 1.0)]
 	light_border_2: f32,
+
 	#[uniform(8)]
-	rotation:       f32,
+	#[inspector(min = 0.0, max = 6.28)]
+	rotation: f32,
+
 	#[uniform(9)]
-	color_a:        LinearRgba,
+	color_a: LinearRgba,
 	#[uniform(10)]
-	color_b:        LinearRgba,
+	color_b: LinearRgba,
 	#[uniform(11)]
-	color_c:        LinearRgba,
+	color_c: LinearRgba,
 	#[uniform(12)]
-	color_d:        LinearRgba,
+	color_d: LinearRgba,
 	#[uniform(13)]
-	size:           f32,
+	size:    f32,
 	//#[uniform(14)]
 	// octaves:        i32,
 	#[uniform(14)]
-	seed:           f32
+	seed:    f32
 }
 
 fn cloud_a() -> GasGiantMaterial {
