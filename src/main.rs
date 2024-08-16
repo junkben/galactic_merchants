@@ -1,3 +1,5 @@
+use std::env;
+
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_mod_picking::DefaultPickingPlugins;
@@ -19,6 +21,8 @@ const TEXT_COLOR: Color = Color::srgb(0.7, 0.7, 0.7);
 fn main() {
 	println!("Hello, world!");
 	let mut app = App::new();
+
+	env::set_var("RUST_BACKTRACE", "full");
 
 	// Declare default plugins plus a custom log and window plugin
 	app.add_plugins(

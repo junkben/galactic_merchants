@@ -5,8 +5,8 @@ const LOGS: [&str; 8] = [
 	// my stuff
 	"bevy_sandbox=debug",
 	// wgpu stuff
-	"wgpu_core=warn",
-	"wgpu_hal=warn",
+	"wgpu_core=info",
+	"wgpu_hal=info",
 	// audio stuff
 	"symphonia_core=warn",
 	"symphonia_bundle_mp3=warn",

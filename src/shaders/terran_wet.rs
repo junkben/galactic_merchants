@@ -1,11 +1,11 @@
 use bevy::{
 	prelude::*,
-	render::render_resource::{AsBindGroup, ShaderRef, ShaderType},
+	render::render_resource::{AsBindGroup, ShaderRef},
 	sprite::{Material2d, MaterialMesh2dBundle}
 };
-use bevy_inspector_egui::InspectorOptions;
+use bevy_inspector_egui::{prelude::ReflectInspectorOptions, InspectorOptions};
 
-const SHADER_ASSET_PATH: &str = "shaders/planets/gas_giant.wgsl";
+const SHADER_ASSET_PATH: &str = "shaders/planets/terran_wet.wgsl";
 
 // Setup a simple 2d scene
 pub fn setup(
@@ -67,7 +67,6 @@ pub struct GasGiantConfig {
 	stretch:            f32,
 	cloud_curve:        f32,
 	rotation:           f32,
-	octaves:            u32,
 	size:               f32,
 	seed:               f32,
 	inner_cloud_config: GasGiantCloudConfig,
@@ -95,7 +94,6 @@ impl Default for GasGiantConfig {
 			stretch:            1.0,
 			cloud_curve:        1.3,
 			rotation:           0.0,
-			octaves:            5,
 			size:               9.0,
 			seed:               5.939,
 			inner_cloud_config: GasGiantCloudConfig {
@@ -169,51 +167,41 @@ fn spawn_nosh(
 impl GasGiantConfig {
 	fn inner_cloud_material(&self) -> GasGiantMaterial {
 		GasGiantMaterial {
-			config: GasGiantMaterialConfig {
-				pixels:         self.pixels,
-				cloud_cover:    self.inner_cloud_config.cloud_cover,
-				light_origin:   self.light_origin,
-				time_speed:     self.time_speed,
-				stretch:        self.stretch,
-				cloud_curve:    self.cloud_curve,
-				light_border_1: self.inner_cloud_config.light_border_1,
-				light_border_2: self.inner_cloud_config.light_border_2,
-				rotation:       self.rotation,
-				octaves:        self.octaves,
-				size:           self.size,
-				seed:           self.seed
-			},
-			colors: GasGiantMaterialColors {
-				base:           self.inner_cloud_config.base_color,
-				outline:        self.inner_cloud_config.outline_color,
-				shadow_base:    self.inner_cloud_config.shadow_base_color,
-				shadow_outline: self.inner_cloud_config.shadow_outline_color
-			}
+			pixels:         self.pixels,
+			cloud_cover:    self.inner_cloud_config.cloud_cover,
+			light_origin:   self.light_origin,
+			time_speed:     self.time_speed,
+			stretch:        self.stretch,
+			cloud_curve:    self.cloud_curve,
+			light_border_1: self.inner_cloud_config.light_border_1,
+			light_border_2: self.inner_cloud_config.light_border_2,
+			rotation:       self.rotation,
+			color_a:        self.inner_cloud_config.base_color,
+			color_b:        self.inner_cloud_config.outline_color,
+			color_c:        self.inner_cloud_config.shadow_base_color,
+			color_d:        self.inner_cloud_config.shadow_outline_color,
+			size:           self.size,
+			seed:           self.seed
 		}
 	}
 
 	fn outer_cloud_material(&self) -> GasGiantMaterial {
 		GasGiantMaterial {
-			config: GasGiantMaterialConfig {
-				pixels:         self.pixels,
-				cloud_cover:    self.outer_cloud_config.cloud_cover,
-				light_origin:   self.light_origin,
-				time_speed:     self.time_speed,
-				stretch:        self.stretch,
-				cloud_curve:    self.cloud_curve,
-				light_border_1: self.outer_cloud_config.light_border_1,
-				light_border_2: self.outer_cloud_config.light_border_2,
-				rotation:       self.rotation,
-				octaves:        self.octaves,
-				size:           self.size,
-				seed:           self.seed
-			},
-			colors: GasGiantMaterialColors {
-				base:           self.outer_cloud_config.base_color,
-				outline:        self.outer_cloud_config.outline_color,
-				shadow_base:    self.outer_cloud_config.shadow_base_color,
-				shadow_outline: self.outer_cloud_config.shadow_outline_color
-			}
+			pixels:         self.pixels,
+			cloud_cover:    self.outer_cloud_config.cloud_cover,
+			light_origin:   self.light_origin,
+			time_speed:     self.time_speed,
+			stretch:        self.stretch,
+			cloud_curve:    self.cloud_curve,
+			light_border_1: self.outer_cloud_config.light_border_1,
+			light_border_2: self.outer_cloud_config.light_border_2,
+			rotation:       self.rotation,
+			color_a:        self.outer_cloud_config.base_color,
+			color_b:        self.outer_cloud_config.outline_color,
+			color_c:        self.outer_cloud_config.shadow_base_color,
+			color_d:        self.outer_cloud_config.shadow_outline_color,
+			size:           self.size,
+			seed:           self.seed
 		}
 	}
 }
@@ -229,50 +217,58 @@ pub struct GasGiantCloudConfig {
 }
 
 // This struct defines the data that will be passed to your shader
-#[derive(ShaderType, Debug, Clone, InspectorOptions)]
-#[repr(align(16))]
-pub struct GasGiantMaterialConfig {
+#[derive(Reflect, Asset, AsBindGroup, Debug, Clone, InspectorOptions)]
+#[reflect(InspectorOptions)]
+pub struct GasGiantMaterial {
+	#[uniform(0)]
 	#[inspector(min = 16.0, max = 400.0)]
-	pixels:       f32,
+	pixels: f32,
+
+	#[uniform(1)]
 	#[inspector(min = 0.0, max = 1.0)]
-	cloud_cover:  f32,
+	cloud_cover: f32,
+
+	#[uniform(2)]
 	light_origin: Vec2,
 
+	#[uniform(3)]
 	#[inspector(min = -1.0, max = 1.0)]
-	time_speed:     f32,
+	time_speed: f32,
+
+	#[uniform(4)]
 	#[inspector(min = 1.0, max = 3.0)]
-	stretch:        f32,
+	stretch: f32,
+
+	#[uniform(5)]
 	#[inspector(min = 1.0, max = 2.0)]
-	cloud_curve:    f32,
+	cloud_curve: f32,
+
+	#[uniform(6)]
 	#[inspector(min = 0.0, max = 1.0)]
 	light_border_1: f32,
 
+	#[uniform(7)]
 	#[inspector(min = 0.0, max = 1.0)]
 	light_border_2: f32,
+
+	#[uniform(8)]
 	#[inspector(min = 0.0, max = 6.28)]
-	rotation:       f32,
-	size:           f32,
-	octaves:        u32,
+	rotation: f32,
 
-	seed: f32
-}
-
-// This struct defines the data that will be passed to your shader
-#[derive(Debug, Clone, InspectorOptions, ShaderType)]
-#[repr(align(16))]
-pub struct GasGiantMaterialColors {
-	base:           LinearRgba,
-	outline:        LinearRgba,
-	shadow_base:    LinearRgba,
-	shadow_outline: LinearRgba
-}
-
-#[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
-pub struct GasGiantMaterial {
-	#[uniform(0)]
-	config: GasGiantMaterialConfig,
-	#[uniform(1)]
-	colors: GasGiantMaterialColors
+	#[uniform(9)]
+	color_a: LinearRgba,
+	#[uniform(10)]
+	color_b: LinearRgba,
+	#[uniform(11)]
+	color_c: LinearRgba,
+	#[uniform(12)]
+	color_d: LinearRgba,
+	#[uniform(13)]
+	size:    f32,
+	//#[uniform(14)]
+	// octaves:        i32,
+	#[uniform(14)]
+	seed:    f32
 }
 
 /// The Material trait is very configurable, but comes with sensible defaults

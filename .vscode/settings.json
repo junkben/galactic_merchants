@@ -23,8 +23,12 @@
     "rust-analyzer.showUnlinkedFileNotification": false,
     "wgsl-analyzer.customImports": {
         "bevy_pbr::mesh_view_bindings": "https://raw.githubusercontent.com/bevyengine/bevy/v0.14.1/crates/bevy_pbr/src/render/mesh_view_bindings.wgsl",
-        "bevy_sprite::mesh2d_vertex_output": "https://raw.githubusercontent.com/bevyengine/bevy/v0.14.1/crates/bevy_sprite/src/render/sprite.wgsl"
+        "bevy_sprite::mesh2d_vertex_output": "https://raw.githubusercontent.com/bevyengine/bevy/v0.14.1/crates/bevy_sprite/src/render/sprite.wgsl",
+        "\"shaders/planets/_utils.wgsl\"": "file:///C:/Users/harru/workspace/galactic_merchants/assets/shaders/planets/_utils.wgsl"
     },
-    "wgsl-analyzer.diagnostics.nagaVersion": "0.14",
-    "wgsl-analyzer.inlayHints.structLayoutHints": true
+    "wgsl-analyzer.diagnostics.nagaVersion": "main",
+    "wgsl-analyzer.inlayHints.structLayoutHints": true,
+    "wgsl-analyzer.diagnostics.nagaParsingErrors": true,
+    "wgsl-analyzer.trace.server": true,
+    "wgsl-analyzer.trace.extension": true
 }
