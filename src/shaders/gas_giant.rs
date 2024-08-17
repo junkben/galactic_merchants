@@ -230,35 +230,39 @@ pub struct GasGiantCloudConfig {
 
 // This struct defines the data that will be passed to your shader
 #[derive(ShaderType, Debug, Clone, InspectorOptions, Reflect)]
+#[reflect(InspectorOptions)]
 #[repr(align(16))]
 pub struct GasGiantMaterialConfig {
-	#[inspector(min = 16.0, max = 400.0)]
+	#[inspector(min = 16.0, max = 400.0, speed = 1.0)]
 	pixels:       f32,
-	#[inspector(min = 0.0, max = 1.0)]
+	#[inspector(min = 0.0, max = 1.0, speed = 0.01)]
 	cloud_cover:  f32,
 	light_origin: Vec2,
 
-	#[inspector(min = -1.0, max = 1.0)]
+	#[inspector(min = -1.0, max = 1.0, speed = 0.01)]
 	time_speed:     f32,
 	#[inspector(min = 1.0, max = 3.0)]
 	stretch:        f32,
 	#[inspector(min = 1.0, max = 2.0)]
 	cloud_curve:    f32,
-	#[inspector(min = 0.0, max = 1.0)]
+	#[inspector(min = 0.0, max = 1.0, speed = 0.01)]
 	light_border_1: f32,
 
-	#[inspector(min = 0.0, max = 1.0)]
+	#[inspector(min = 0.0, max = 1.0, speed = 0.01)]
 	light_border_2: f32,
-	#[inspector(min = 0.0, max = 6.28)]
+	#[inspector(min = 0.0, max = 6.28, speed = 0.0628)]
 	rotation:       f32,
+	#[inspector(min = 1.0, max = 100.0, speed = 1.0)]
 	size:           f32,
+	#[inspector(min = 1, max = 10)]
 	octaves:        u32,
-
-	seed: f32
+	#[inspector(min = 1.0, max = 10.0, speed = 0.001)]
+	seed:           f32
 }
 
 // This struct defines the data that will be passed to your shader
 #[derive(Debug, Clone, InspectorOptions, ShaderType, Reflect)]
+#[reflect(InspectorOptions)]
 #[repr(align(16))]
 pub struct GasGiantMaterialColors {
 	base:           LinearRgba,
@@ -267,17 +271,8 @@ pub struct GasGiantMaterialColors {
 	shadow_outline: LinearRgba
 }
 
-#[derive(
-	Asset,
-	// TypePath,
-	AsBindGroup,
-	Debug,
-	Clone,
-	InspectorOptions,
-	Reflect,
-)]
+#[derive(Asset, AsBindGroup, Debug, Clone, InspectorOptions, Reflect)]
 #[reflect(InspectorOptions)]
-
 pub struct GasGiantMaterial {
 	#[uniform(0)]
 	config: GasGiantMaterialConfig,

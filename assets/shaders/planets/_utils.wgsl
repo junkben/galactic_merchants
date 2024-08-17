@@ -80,13 +80,7 @@ fn dither(uv_pixel: vec2<f32>, uv_real: vec2<f32>, pixels: f32) -> bool {
 }
 
 fn spherify(uv: vec2<f32>) -> vec2<f32> {
-    // stuck in top-left
-    //let centered: vec2<f32> = uv * 2.0 - 1.0;
-    //
-    // kinda fixed
-    //let centered: vec2<f32> = uv * 2.0 - 2.0;
-    //
-    let centered: vec2<f32> = 2.0 * (uv - 1.0);
+    let centered: vec2<f32> = uv * 2.0 - 1.0;
     let z: f32 = pow(1.0 - dot(centered.xy, centered.xy), 0.5);
     let sphere: vec2<f32> = centered / (z + 1.0);
     return sphere * 0.5 + 0.5;
