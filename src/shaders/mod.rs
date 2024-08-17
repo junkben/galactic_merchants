@@ -13,6 +13,7 @@ impl Plugin for ShadersPlugin {
 			Material2dPlugin::<gas_giant::GasGiantMaterial>::default(),
 			// Material2dPlugin::<terran_wet::TerranWetMaterial>::default()
 		))
+		.register_asset_reflect::<gas_giant::GasGiantMaterial>()
 		.add_systems(OnEnter(MenuState::Main), gas_giant::setup);
 	}
 }

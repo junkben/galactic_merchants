@@ -99,5 +99,5 @@ fn rotate(coord: vec2<f32>, angle: f32) -> vec2<f32> {
         vec2(cos(angle), -sin(angle)),
         vec2(sin(angle), cos(angle)),
     );
-    return coord + 0.5;
+    return new_coord + 0.5;
 }

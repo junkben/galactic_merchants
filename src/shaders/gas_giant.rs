@@ -3,7 +3,7 @@ use bevy::{
 	render::render_resource::{AsBindGroup, ShaderRef, ShaderType},
 	sprite::{Material2d, MaterialMesh2dBundle}
 };
-use bevy_inspector_egui::InspectorOptions;
+use bevy_inspector_egui::{prelude::ReflectInspectorOptions, InspectorOptions};
 
 const SHADER_ASSET_PATH: &str = "shaders/planets/gas_giant.wgsl";
 
@@ -229,7 +229,7 @@ pub struct GasGiantCloudConfig {
 }
 
 // This struct defines the data that will be passed to your shader
-#[derive(ShaderType, Debug, Clone, InspectorOptions)]
+#[derive(ShaderType, Debug, Clone, InspectorOptions, Reflect)]
 #[repr(align(16))]
 pub struct GasGiantMaterialConfig {
 	#[inspector(min = 16.0, max = 400.0)]
@@ -258,7 +258,7 @@ pub struct GasGiantMaterialConfig {
 }
 
 // This struct defines the data that will be passed to your shader
-#[derive(Debug, Clone, InspectorOptions, ShaderType)]
+#[derive(Debug, Clone, InspectorOptions, ShaderType, Reflect)]
 #[repr(align(16))]
 pub struct GasGiantMaterialColors {
 	base:           LinearRgba,
@@ -267,7 +267,17 @@ pub struct GasGiantMaterialColors {
 	shadow_outline: LinearRgba
 }
 
-#[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
+#[derive(
+	Asset,
+	// TypePath,
+	AsBindGroup,
+	Debug,
+	Clone,
+	InspectorOptions,
+	Reflect,
+)]
+#[reflect(InspectorOptions)]
+
 pub struct GasGiantMaterial {
 	#[uniform(0)]
 	config: GasGiantMaterialConfig,
