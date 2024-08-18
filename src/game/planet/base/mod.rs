@@ -1,3 +1,26 @@
+use bevy::{
+	app::{Plugin, Update},
+	prelude::*
+};
+
+mod nosh;
+
+#[derive(Component)]
+pub struct IsBasePlanet;
+
+pub struct BasePlanetPlugin;
+impl Plugin for BasePlanetPlugin {
+	fn build(&self, app: &mut bevy::prelude::App) {
+		app.add_event::<nosh::SpawnNosh>()
+			// Systems to handle the main menu screen
+			.add_systems(
+				Update,
+				nosh::handle_event_spawn_nosh
+					.run_if(on_event::<nosh::SpawnNosh>())
+			);
+	}
+}
+
 macro_rules! base_planet {
 	($($name:ident, $description:expr);*) => {
         use crate::game::planet::stat::PlanetStat;
@@ -42,3 +65,13 @@ base_planet!(
 	Xeen, "XEEN is one giant junkyard filled with spare ship parts and brilliant mechanics.";
 	Zile, "ZILE is a wealthy merchant's planet and home to Mr. Zinn."
 );
+
+// impl BasePlanet {
+// 	fn planet_bundle(&self) -> Option<impl Bundle> {
+// 		use BasePlanet::*;
+// 		match self {
+// 			&Nosh => Some(),
+// 			_ => None
+// 		}
+// 	}
+//}

@@ -1,10 +1,10 @@
 // Had to run a conversion on the final color, as it looked washed out.
 // Credit to Andrew Baxter
 // https://github.com/bevyengine/bevy/discussions/8937#discussioncomment-6269822
-fn to_linear(nonlinear: vec4<f32>) -> vec4<f32> {
-    let cutoff = step(nonlinear, vec4<f32>(0.04045));
-    let higher = pow((nonlinear + vec4<f32>(0.055)) / vec4<f32>(1.055), vec4<f32>(2.4));
-    let lower = nonlinear / vec4<f32>(12.92);
+fn to_linear(nonlinear: vec3<f32>) -> vec3<f32> {
+    let cutoff = step(nonlinear, vec3<f32>(0.04045));
+    let higher = pow((nonlinear + vec3<f32>(0.055)) / vec3<f32>(1.055), vec3<f32>(2.4));
+    let lower = nonlinear / vec3<f32>(12.92);
     return mix(higher, lower, cutoff);
 }
 
@@ -14,6 +14,10 @@ fn glslmod(x: f32, y: f32) -> f32 {
 
 fn glslmodv(x: vec2<f32>, y: vec2<f32>) -> vec2<f32> {
     return x - y * floor(x / y);
+}
+
+fn modified_time(time: f32, time_speed: f32) -> f32 {
+    return time * time_speed;
 }
 
 fn rand(coord: vec2<f32>, size: f32, seed: f32) -> f32 {
@@ -63,20 +67,23 @@ fn circle_noise(uv: vec2<f32>, size: f32, seed: f32) -> f32 {
     return smoothstep(0.0, r, m * 0.75);
 }
 
-fn cloud_alpha(uv: vec2<f32>, size: f32, seed: f32, octaves: u32, time: f32, time_speed: f32) -> f32 {
+fn cloud_alpha(uv: vec2<f32>, size: f32, seed: f32, octaves: u32, time: f32) -> f32 {
 	// more iterations for more turbulence
     var c_noise: f32 = 0.0;
     for (var i = 0; i < 9; i++) {
         c_noise += circle_noise(
-            (uv * size * 0.3) + (f32(i + 1) + 10.0) + (vec2(time * time_speed, 0.0)), size, seed
+            (uv * size * 0.3) + (f32(i + 1) + 10.0) + (vec2(time, 0.0)), size, seed
         );
     }
-    return fbm(uv * size + c_noise + vec2(time * time_speed, 0.0), size, seed, octaves);
+    return fbm(uv * size + c_noise + vec2(time, 0.0), size, seed, octaves);
 }
 
-fn dither(uv_pixel: vec2<f32>, uv_real: vec2<f32>, pixels: f32) -> bool {
+fn dither(uv_pixel: vec2<f32>, uv_real: vec2<f32>, pixels: f32) -> u32 {
     let v = glslmod((uv_pixel.x + uv_real.y), (2.0 / pixels));
-    return v <= 1.0 / pixels;
+    if v <= 1.0 / pixels {
+        return 1u;
+    }
+    return 0u;
 }
 
 fn spherify(uv: vec2<f32>) -> vec2<f32> {
