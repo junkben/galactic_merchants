@@ -39,9 +39,9 @@ struct LandMassCloudMaterialColors {
 @group(2) @binding(1) var<uniform> colors: LandMassCloudMaterialColors;
 
 @fragment
-fn fragment(mesh: VertexOutput) -> @location(0) vec4<f32> {
+fn fragment(input: VertexOutput) -> @location(0) vec4<f32> {
     // pixelize uv
-    var uv = floor(mesh.uv * info.pixels) / info.pixels;
+    var uv = floor(input.uv * info.pixels) / info.pixels;
 	
 	// distance to light source
     let d_light: f32 = distance(uv, info.light_origin);

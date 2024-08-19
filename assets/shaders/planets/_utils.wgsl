@@ -25,29 +25,33 @@ fn rand(coord: vec2<f32>, size: f32, seed: f32) -> f32 {
     return fract(sin(dot(coord_mod.xy, vec2(12.9898, 78.233))) * 15.5453 * seed);
 }
 
+// Based on Morgan McGuire @morgan3d
+// https://www.shadertoy.com/view/4dS3Wd
 fn noise(coord: vec2<f32>, size: f32, seed: f32) -> f32 {
     let i: vec2<f32> = floor(coord);
-    let f: vec2<f32> = fract(coord);
-
     let a: f32 = rand(i, size, seed);
     let b: f32 = rand(i + vec2(1.0, 0.0), size, seed);
     let c: f32 = rand(i + vec2(0.0, 1.0), size, seed);
     let d: f32 = rand(i + vec2(1.0, 1.0), size, seed);
 
-    let cubic: vec2<f32> = f * f * (3.0 - 2.0 * f);
+    let f: vec2<f32> = fract(coord);
+    let u: vec2<f32> = f * f * (3.0 - 2.0 * f);
 
-    return mix(a, b, cubic.x) + (c - a) * cubic.y * (1.0 - cubic.x) + (d - b) * cubic.x * cubic.y;
+    return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
 }
 
+// Fractal Brownian Motion: https://thebookofshaders.com/13/
+const LACUNARITY: f32 = 2.0;
+const GAIN: f32 = 0.5;
 fn fbm(coord: vec2<f32>, size: f32, seed: f32, octaves: u32) -> f32 {
-    var value = 0.0;
-    var scale = 0.5;
-    var coord_copy = coord;
+    var value: f32 = 0.0;
+    var amplitude: f32 = 0.5;
+    var coord_copy: vec2<f32> = coord;
 
-    for (var i = 0; i < i32(octaves); i++) {
-        value += noise(coord_copy, size, seed) * scale;
-        coord_copy += 2.0;
-        scale *= 0.5;
+    for (var i: u32 = 0u; i < octaves; i++) {
+        value += noise(coord_copy, size, seed) * amplitude;
+        coord_copy *= LACUNARITY;
+        amplitude *= GAIN;
     }
 
     return value;
@@ -55,9 +59,8 @@ fn fbm(coord: vec2<f32>, size: f32, seed: f32, octaves: u32) -> f32 {
 
 // by Leukbaars from https://www.shadertoy.com/view/4tK3zR
 fn circle_noise(uv: vec2<f32>, size: f32, seed: f32) -> f32 {
-    var uv_copy = uv;
-    let uv_y: f32 = floor(uv_copy.y);
-    uv_copy.x = uv_y * 0.31;
+    let uv_y: f32 = floor(uv.y);
+    var uv_copy = vec2(uv.x + uv_y * 0.31, uv.y);
 
     let f: vec2<f32> = fract(uv_copy);
     let h: f32 = rand(vec2(floor(uv_copy.x), floor(uv_y)), size, seed);

@@ -6,7 +6,7 @@ mod stat;
 use std::collections::HashMap;
 
 use bevy::prelude::*;
-use bundle::terran_wet::SpawnTerranWet;
+use bundle::{gas_giant::SpawnGasGiant, terran_wet::SpawnTerranWet};
 use stat::PlanetStat;
 
 use crate::{
@@ -29,18 +29,46 @@ impl Plugin for PlanetPlugin {
 
 fn spawn_planet_of_the_day(
 	mut commands: Commands,
-	meshes: ResMut<Assets<Mesh>>,
-	land_materials: ResMut<Assets<LandRiversShader>>,
-	cloud_materials: ResMut<Assets<CloudShader>>
+	mut meshes: ResMut<Assets<Mesh>>,
+	mut land_materials: ResMut<Assets<LandRiversShader>>,
+	mut cloud_materials: ResMut<Assets<CloudShader>>
 ) {
-	let (land, cloud) = SpawnTerranWet::default().to_sprite_bundles(
-		meshes,
-		land_materials,
-		cloud_materials
+	// Spawn terran_wet
+	let (land, cloud) = SpawnTerranWet {
+		transform: Transform::default()
+			.with_translation(Vec3 {
+				x: -225.0,
+				y: 0.0,
+				z: 0.0
+			})
+			.with_scale(Vec3::splat(400.0)),
+		..default()
+	}
+	.to_sprite_bundles(
+		meshes.as_mut(),
+		land_materials.as_mut(),
+		cloud_materials.as_mut()
 	);
 
 	commands.spawn(land);
 	commands.spawn(cloud);
+
+	// Spawn gas_giant_1
+	let gas_giant_bundles = SpawnGasGiant {
+		transform: Transform::default()
+			.with_translation(Vec3 {
+				x: 225.0,
+				y: 0.0,
+				z: 0.0
+			})
+			.with_scale(Vec3::splat(400.0)),
+		..default()
+	}
+	.to_sprite_bundles(meshes.as_mut(), cloud_materials.as_mut());
+
+	for bundle in gas_giant_bundles {
+		commands.spawn(bundle);
+	}
 }
 
 #[derive(Debug, Clone)]

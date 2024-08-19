@@ -74,8 +74,8 @@ impl SpawnGasGiant {
 
 	pub fn to_sprite_bundles(
 		&self,
-		mut meshes: ResMut<Assets<Mesh>>,
-		mut materials: ResMut<Assets<CloudShader>>
+		meshes: &mut Assets<Mesh>,
+		materials: &mut Assets<CloudShader>
 	) -> Vec<MaterialMesh2dBundle<CloudShader>> {
 		vec![
 			MaterialMesh2dBundle {

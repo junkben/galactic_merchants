@@ -79,9 +79,9 @@ impl SpawnTerranWet {
 
 	pub fn to_sprite_bundles(
 		&self,
-		mut meshes: ResMut<Assets<Mesh>>,
-		mut land_materials: ResMut<Assets<LandRiversShader>>,
-		mut cloud_materials: ResMut<Assets<CloudShader>>
+		meshes: &mut Assets<Mesh>,
+		land_materials: &mut Assets<LandRiversShader>,
+		cloud_materials: &mut Assets<CloudShader>
 	) -> (
 		MaterialMesh2dBundle<LandRiversShader>,
 		MaterialMesh2dBundle<CloudShader>

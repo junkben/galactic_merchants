@@ -15,8 +15,8 @@ pub struct IsNosh;
 
 pub fn handle_event_spawn_nosh(
 	mut commands: Commands,
-	meshes: ResMut<Assets<Mesh>>,
-	materials: ResMut<Assets<CloudShader>>,
+	mut meshes: ResMut<Assets<Mesh>>,
+	mut materials: ResMut<Assets<CloudShader>>,
 	mut er: EventReader<SpawnNosh>
 ) {
 	let Some(event) = er.read().last() else {
@@ -26,7 +26,7 @@ pub fn handle_event_spawn_nosh(
 	let mut nosh = nosh_spawn();
 	nosh.transform = event.transform;
 
-	for bundle in nosh.to_sprite_bundles(meshes, materials) {
+	for bundle in nosh.to_sprite_bundles(meshes.as_mut(), materials.as_mut()) {
 		commands.spawn((bundle, super::IsBasePlanet, IsNosh));
 	}
 }

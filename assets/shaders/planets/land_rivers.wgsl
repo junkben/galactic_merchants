@@ -43,7 +43,7 @@ struct LandRiversMaterialColors {
 @fragment
 fn fragment(mesh: VertexOutput) -> @location(0) vec4<f32> {
     // pixelize uv
-    var uv = floor(mesh.uv * info.pixels) / info.pixels;
+    var uv: vec2<f32> = floor(mesh.uv * info.pixels) / info.pixels;
 
     var can_dither: u32 = dither(uv, mesh.uv, info.pixels);
 
@@ -63,7 +63,7 @@ fn fragment(mesh: VertexOutput) -> @location(0) vec4<f32> {
     uv = rotate(uv, info.rotation);
 	
 	// some scrolling noise for landmasses
-    let time = modified_time(globals.time, info.time_speed);
+    let time: f32 = modified_time(globals.time, info.time_speed);
     let base_fbm_uv: vec2<f32> = uv * info.size + vec2(time, 0.0);
 	
 	// use multiple fbm's at different places so we can determine what color land gets
